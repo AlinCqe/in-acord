@@ -1,0 +1,2 @@
+"""În Acord backend package."""
+

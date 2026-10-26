@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Date locale și backupuri — nu se publică în Git
+data/*.db
+data/*.db-*
+backups/
+
+# Configurare locală
+.env
+.idea/
+.vscode/
+

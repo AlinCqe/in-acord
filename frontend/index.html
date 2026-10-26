@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>În Acord</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header>
+      <p class="eyebrow">Biblioteca mea</p>
+      <h1>În Acord</h1>
+      <p>Cântări, acorduri și programe într-un singur loc.</p>
+    </header>
+
+    <main>
+      <section aria-labelledby="add-song-title" class="card">
+        <h2 id="add-song-title">Adaugă o cântare</h2>
+        <form id="song-form">
+          <label>
+            Titlu
+            <input name="title" required maxlength="200" />
+          </label>
+
+          <div class="form-row">
+            <label>
+              Tonalitate
+              <input name="baseKey" required value="C" maxlength="8" />
+            </label>
+            <label>
+              Transpunere
+              <input name="transposeOffset" type="number" value="0" min="-12" max="12" />
+            </label>
+          </div>
+
+          <label>
+            Text și acorduri
+            <textarea name="content" required rows="8" placeholder="[C]Prima strofă..."></textarea>
+          </label>
+
+          <button type="submit">Salvează cântarea</button>
+          <p id="form-message" role="status"></p>
+        </form>
+      </section>
+
+      <section aria-labelledby="songs-title" class="card">
+        <div class="section-heading">
+          <h2 id="songs-title">Cântări</h2>
+          <button id="refresh-button" class="secondary" type="button">Reîncarcă</button>
+        </div>
+        <input id="search" type="search" placeholder="Caută după titlu sau text" />
+        <ul id="song-list" class="song-list"></ul>
+        <p id="empty-state">Nu există încă nicio cântare.</p>
+      </section>
+
+      <section id="song-detail" class="card" hidden aria-labelledby="detail-title">
+        <div class="section-heading">
+          <div>
+            <p id="detail-meta" class="eyebrow"></p>
+            <h2 id="detail-title"></h2>
+          </div>
+          <button id="close-detail" class="secondary" type="button">Închide</button>
+        </div>
+        <pre id="detail-content" class="song-content"></pre>
+      </section>
+    </main>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
+
