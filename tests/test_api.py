@@ -18,6 +18,7 @@ def test_create_list_and_read_song(client):
     created = create_response.json()
     assert created["title"] == payload["title"]
     assert created["transposeOffset"] == 3
+    assert created["status"] == "draft"
 
     list_response = client.get("/api/songs")
     assert list_response.status_code == 200
@@ -59,13 +60,18 @@ def test_update_song_increments_version(client):
 
     response = client.patch(
         f"/api/songs/{created['id']}",
-        json={"title": "Titlu actualizat", "transposeOffset": 3},
+        json={
+            "title": "Titlu actualizat",
+            "transposeOffset": 3,
+            "status": "ready",
+        },
     )
 
     assert response.status_code == 200
     updated = response.json()
     assert updated["title"] == "Titlu actualizat"
     assert updated["transposeOffset"] == 3
+    assert updated["status"] == "ready"
     assert updated["version"] == created["version"] + 1
 
 
@@ -83,4 +89,28 @@ def test_update_rejects_null_for_required_song_fields(client):
     response = client.patch(f"/api/songs/{created['id']}", json={"title": None})
 
     assert response.status_code == 422
+
+
+def test_update_rejects_invalid_or_null_status(client):
+    created = client.post(
+        "/api/songs",
+        json={
+            "title": "Titlu",
+            "content": "[C]Text demonstrativ",
+            "baseKey": "C",
+            "transposeOffset": 0,
+        },
+    ).json()
+
+    invalid_response = client.patch(
+        f"/api/songs/{created['id']}",
+        json={"status": "finished"},
+    )
+    null_response = client.patch(
+        f"/api/songs/{created['id']}",
+        json={"status": None},
+    )
+
+    assert invalid_response.status_code == 422
+    assert null_response.status_code == 422
 

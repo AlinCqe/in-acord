@@ -20,7 +20,7 @@ class Song(Base):
     title: Mapped[str] = mapped_column(String(200), index=True)
     alternate_title: Mapped[str | None] = mapped_column(String(200), nullable=True)
     content: Mapped[str] = mapped_column(Text)
-    base_key: Mapped[str] = mapped_column(String(8))
+    base_key: Mapped[str | None] = mapped_column(String(200), nullable=True)
     transpose_offset: Mapped[int] = mapped_column(Integer, default=0)
     author: Mapped[str | None] = mapped_column(String(200), nullable=True)
     source: Mapped[str | None] = mapped_column(String(200), nullable=True)
@@ -28,6 +28,9 @@ class Song(Base):
     notes: Mapped[str] = mapped_column(Text, default="")
     favorite: Mapped[bool] = mapped_column(Boolean, default=False)
     archived: Mapped[bool] = mapped_column(Boolean, default=False)
+    status: Mapped[str] = mapped_column(
+        String(10), default="draft", server_default="draft", index=True
+    )
     version: Mapped[int] = mapped_column(Integer, default=1)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
     updated_at: Mapped[datetime] = mapped_column(

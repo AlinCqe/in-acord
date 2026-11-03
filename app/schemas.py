@@ -1,10 +1,16 @@
 import re
 from datetime import datetime
+from enum import Enum
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 KEY_PATTERN = re.compile(r"^[A-G](?:#|b)?m?$")
+
+
+class SongStatus(str, Enum):
+    DRAFT = "draft"
+    READY = "ready"
 
 
 def to_camel(value: str) -> str:
@@ -24,7 +30,7 @@ class SongFields(ApiModel):
     title: str = Field(min_length=1, max_length=200)
     alternate_title: str | None = Field(default=None, max_length=200)
     content: str = Field(min_length=1)
-    base_key: str = Field(min_length=1, max_length=8)
+    base_key: str | None = Field(default=None, max_length=8)
     transpose_offset: int = Field(default=0, ge=-12, le=12)
     author: str | None = Field(default=None, max_length=200)
     source: str | None = Field(default=None, max_length=200)
@@ -32,6 +38,7 @@ class SongFields(ApiModel):
     notes: str = ""
     favorite: bool = False
     archived: bool = False
+    status: SongStatus = SongStatus.DRAFT
 
     @field_validator("title", "content")
     @classmethod
@@ -66,16 +73,17 @@ class SongUpdate(ApiModel):
     notes: str | None = None
     favorite: bool | None = None
     archived: bool | None = None
+    status: SongStatus | None = None
 
     @model_validator(mode="after")
     def required_fields_may_not_be_null(self):
         required_fields = {
             "title",
             "content",
-            "base_key",
             "transpose_offset",
             "favorite",
             "archived",
+            "status",
         }
         invalid_fields = [
             field
@@ -104,6 +112,10 @@ class SongUpdate(ApiModel):
         if value is None:
             return value
         cleaned = value.strip()
+       
+        if not cleaned:
+            return None
+        
         if not KEY_PATTERN.fullmatch(cleaned):
             raise ValueError("Folosește o tonalitate precum C, F#, Bb sau Em.")
         return cleaned
