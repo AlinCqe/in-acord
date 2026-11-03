@@ -50,8 +50,14 @@ class SongFields(ApiModel):
 
     @field_validator("base_key")
     @classmethod
-    def validate_base_key(cls, value: str) -> str:
+    def validate_optional_base_key(cls, value: str | None) -> str | None:
+        if value is None:
+            return value
         cleaned = value.strip()
+       
+        if not cleaned:
+            return None
+        
         if not KEY_PATTERN.fullmatch(cleaned):
             raise ValueError("Folosește o tonalitate precum C, F#, Bb sau Em.")
         return cleaned
