@@ -323,6 +323,29 @@
         background: #f0f1ed;
       }
 
+      .transpose-editor {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
+
+      .transpose-step-button {
+        width: 1.9rem;
+        height: 1.9rem;
+        padding: 0;
+        border: 1px solid #cfd4ca;
+        border-radius: 999px;
+        color: #43513f;
+        background: #edf1e9;
+        cursor: pointer;
+        font-weight: 800;
+      }
+
+      .transpose-step-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.4;
+      }
+
       dialog {
         width: min(calc(100% - 2rem), 36rem);
         max-height: calc(100vh - 2rem);
@@ -359,6 +382,35 @@
         margin: 0;
         font-size: 1.25rem;
         letter-spacing: -0.02em;
+      }
+
+      .dialog-heading-actions {
+        display: flex;
+        flex: 0 0 auto;
+        gap: 0.45rem;
+      }
+
+      .edit-icon-button {
+        display: grid;
+        width: 2.5rem;
+        height: 2.5rem;
+        padding: 0;
+        place-items: center;
+        border: 0;
+        border-radius: 0.8rem;
+        color: #596055;
+        background: #f0f1ec;
+        cursor: pointer;
+      }
+
+      .edit-icon-button svg {
+        width: 1.15rem;
+        height: 1.15rem;
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.8;
       }
 
       .close-button {
@@ -423,6 +475,23 @@
         box-shadow: 0 0 0 3px rgb(111 130 103 / 15%);
       }
 
+      #edit-song-form {
+        display: block;
+      }
+
+      .edit-title {
+        width: 100%;
+        min-height: 2.5rem;
+        padding: 0.45rem 0.65rem;
+        font-size: 1.1rem;
+        font-weight: 750;
+      }
+
+      .edit-content {
+        width: 100%;
+        min-height: 20rem;
+      }
+
       .primary-button {
         min-height: 3.1rem;
         margin-top: 0.25rem;
@@ -452,7 +521,9 @@
 
       .dialog-actions {
         display: flex;
+        flex-wrap: wrap;
         justify-content: flex-end;
+        gap: 0.65rem;
         margin-top: 1.5rem;
         padding-top: 1rem;
         border-top: 1px solid #e4e5df;
@@ -472,6 +543,11 @@
       .secondary-button:hover {
         border-color: #adb9a7;
         background: #e3e9df;
+      }
+
+      .secondary-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.55;
       }
 
       @media (max-width: 38rem) {
@@ -661,7 +737,7 @@
         <form id="add-song-form">
           <div class="form-row">
             <label>Titlu<input name="title" required maxlength="200" autocomplete="off" /></label>
-            <label>Transpunere<input name="transposeOffset" type="number" value="0" min="-12" max="12" /></label>
+            <label>±<input name="transposeOffset" type="number" value="0" min="-12" max="12" aria-label="Valoare plus sau minus" /></label>
           </div>
           <label>Text și acorduri<textarea name="content" required placeholder="[C]Primul vers...&#10;[G]Al doilea vers..."></textarea></label>
           <button class="primary-button" type="submit">Adaugă cântarea</button>
@@ -671,19 +747,35 @@
 
     <dialog id="song-detail-dialog">
       <div class="dialog-body">
-        <div class="dialog-heading">
-          <h2 id="detail-title"></h2>
-          <button class="close-button" type="button" data-close-detail aria-label="Închide">✕</button>
-        </div>
-        <div class="song-detail-meta">
-          <span id="detail-category" class="category-pill"></span>
-          <span id="detail-transpose" class="transpose-pill"></span>
-          <span id="detail-last-sung" class="category-pill"></span>
-        </div>
-        <pre id="detail-content" class="song-content"></pre>
-        <div class="dialog-actions">
-          <button id="move-song-button" class="secondary-button" type="button"></button>
-        </div>
+        <form id="edit-song-form">
+          <div class="dialog-heading">
+            <div>
+              <h2 id="detail-title"></h2>
+              <input id="edit-title" class="edit-title" type="text" maxlength="200" aria-label="Titlu" hidden />
+            </div>
+            <div class="dialog-heading-actions">
+              <button id="edit-song-button" class="edit-icon-button" type="button" aria-label="Editează cântarea">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l11-11-4-4L4 16z" /><path d="m13.5 6.5 4 4" /></svg>
+              </button>
+              <button class="close-button" type="button" data-close-detail aria-label="Închide">✕</button>
+            </div>
+          </div>
+          <div class="song-detail-meta">
+            <span id="detail-category" class="category-pill"></span>
+            <span class="transpose-editor">
+              <button id="decrease-transpose" class="transpose-step-button" type="button" aria-label="Scade cu 1" hidden>−</button>
+              <span id="detail-transpose" class="transpose-pill"></span>
+              <button id="increase-transpose" class="transpose-step-button" type="button" aria-label="Crește cu 1" hidden>+</button>
+            </span>
+            <span id="detail-last-sung" class="category-pill"></span>
+          </div>
+          <pre id="detail-content" class="song-content"></pre>
+          <textarea id="edit-content" class="edit-content" aria-label="Text și acorduri" hidden></textarea>
+          <div class="dialog-actions">
+            <button id="save-song-button" class="primary-button" type="submit" hidden>Salvează</button>
+            <button id="move-song-button" class="secondary-button" type="button"></button>
+          </div>
+        </form>
       </div>
     </dialog>
 
